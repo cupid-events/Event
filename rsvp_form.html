@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישור הגעה לאירוע</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>אישור הגעה לאירוע</h1>
+        <form id="rsvpForm">
+            <div class="form-group">
+                <label for="phoneNumber">מספר טלפון:</label>
+                <input type="text" id="phoneNumber" readonly>
+            </div>
+            <div class="form-group">
+                <label for="status">מגיע/ה?</label>
+                <select id="status" required>
+                    <option value="">בחר/י</option>
+                    <option value="כן">כן</option>
+                    <option value="לא">לא</option>
+                    <option value="אולי">אולי</option>
+                </select>
+            </div>
+            <div id="countGroup" class="form-group hidden">
+                <label for="count">כמה אנשים מגיעים?</label>
+                <input type="number" id="count" min="1" value="1">
+            </div>
+            <button type="submit">שלח</button>
+            <p id="message"></p>
+        </form>
+    </div>
+    
+    <script>
+        // החלף את הכתובת הבאה ב-URL של Google Apps Script שלך
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCi6cq9I95eJ4wG7kUIjFkAf5xm3HPCZZBKd6MybYB7SYius0ppgkK3rlevE6wYgE0-w/exec';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let rawPhoneNumber = urlParams.get('phone_number');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            
+            if (rawPhoneNumber) {
+                // מנקה את הקידומת הבינלאומית ומעצב את המספר
+                if (rawPhoneNumber.startsWith('+972')) {
+                    rawPhoneNumber = '0' + rawPhoneNumber.substring(4);
+                }
+                const formattedNumber = rawPhoneNumber.substring(0, 3) + '-' + rawPhoneNumber.substring(3);
+                phoneNumberInput.value = formattedNumber;
+            }
+
+            const statusSelect = document.getElementById('status');
+            const countGroup = document.getElementById('countGroup');
+            const countInput = document.getElementById('count');
+
+            statusSelect.addEventListener('change', () => {
+                if (statusSelect.value === 'כן' || statusSelect.value === 'אולי') {
+                    countGroup.classList.remove('hidden');
+                } else {
+                    countGroup.classList.add('hidden');
+                    countInput.value = 1;
+                }
+            });
+
+            document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const status = statusSelect.value;
+                let count = countInput.value;
+                if (status === 'לא') {
+                    count = 1; // קובע 1 אוטומטית אם סטטוס הוא 'לא'
+                }
+                const phoneNumber = phoneNumberInput.value.replace('-', '');
+
+                const formData = new FormData();
+                formData.append('phoneNumber', phoneNumber);
+                formData.append('status', status);
+                formData.append('count', count);
+
+                const messageElem = document.getElementById('message');
+                messageElem.textContent = 'שולח...';
+                messageElem.style.color = '#007bff';
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const text = await response.text();
+                    if (text === 'Success') {
+                        messageElem.textContent = 'התשובה נשלחה בהצלחה!';
+                        messageElem.style.color = 'green';
+                    } else {
+                        messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
+                        messageElem.style.color = 'red';
+                    }
+                } catch (error) {
+                    messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
+                    messageElem.style.color = 'red';
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
