@@ -63,10 +63,8 @@
     <div class="container">
         <h1>אישור הגעה לאירוע</h1>
         <form id="rsvpForm">
-            <div class="form-group">
-                <label for="phoneNumber">מספר טלפון:</label>
-                <input type="text" id="phoneNumber" readonly>
-            </div>
+            <input type="hidden" id="phoneNumber">
+            
             <div class="form-group">
                 <label for="status">מגיע/ה?</label>
                 <select id="status" required>
@@ -95,15 +93,12 @@
         const phoneNumberInput = document.getElementById('phoneNumber');
         
         if (rawPhoneNumber) {
-            // מנקה את הקידומת הבינלאומית ומעצב את המספר
-            let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, ''); // מסיר כל תו שאינו ספרה
+            let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, '');
             
-            // בודק ומחליף קידומת בינלאומית
             if (cleanedNumber.startsWith('972')) {
                 cleanedNumber = '0' + cleanedNumber.substring(3);
             }
             
-            // מעצב את המספר לפורמט 05X-XXXXXXX
             const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
             phoneNumberInput.value = formattedNumber;
         }
@@ -159,6 +154,6 @@
             }
         });
     });
-</script>
+    </script>
 </body>
 </html>
