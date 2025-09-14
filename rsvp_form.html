@@ -90,70 +90,75 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCi6cq9I95eJ4wG7kUIjFkAf5xm3HPCZZBKd6MybYB7SYius0ppgkK3rlevE6wYgE0-w/exec';
 
         document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            let rawPhoneNumber = urlParams.get('phone_number');
-            const phoneNumberInput = document.getElementById('phoneNumber');
+        const urlParams = new URLSearchParams(window.location.search);
+        let rawPhoneNumber = urlParams.get('phone_number');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        
+        if (rawPhoneNumber) {
+            // מנקה את הקידומת הבינלאומית ומעצב את המספר
+            let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, ''); // מסיר כל תו שאינו ספרה
             
-            if (rawPhoneNumber) {
-                // מנקה את הקידומת הבינלאומית ומעצב את המספר
-                if (rawPhoneNumber.startsWith('+972')) {
-                    rawPhoneNumber = '0' + rawPhoneNumber.substring(4);
-                }
-                const formattedNumber = rawPhoneNumber.substring(0, 3) + '-' + rawPhoneNumber.substring(3);
-                phoneNumberInput.value = formattedNumber;
+            // בודק ומחליף קידומת בינלאומית
+            if (cleanedNumber.startsWith('972')) {
+                cleanedNumber = '0' + cleanedNumber.substring(3);
             }
+            
+            // מעצב את המספר לפורמט 05X-XXXXXXX
+            const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
+            phoneNumberInput.value = formattedNumber;
+        }
 
-            const statusSelect = document.getElementById('status');
-            const countGroup = document.getElementById('countGroup');
-            const countInput = document.getElementById('count');
+        const statusSelect = document.getElementById('status');
+        const countGroup = document.getElementById('countGroup');
+        const countInput = document.getElementById('count');
 
-            statusSelect.addEventListener('change', () => {
-                if (statusSelect.value === 'כן' || statusSelect.value === 'אולי') {
-                    countGroup.classList.remove('hidden');
-                } else {
-                    countGroup.classList.add('hidden');
-                    countInput.value = 1;
-                }
-            });
-
-            document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const status = statusSelect.value;
-                let count = countInput.value;
-                if (status === 'לא') {
-                    count = 1; // קובע 1 אוטומטית אם סטטוס הוא 'לא'
-                }
-                const phoneNumber = phoneNumberInput.value.replace('-', '');
-
-                const formData = new FormData();
-                formData.append('phoneNumber', phoneNumber);
-                formData.append('status', status);
-                formData.append('count', count);
-
-                const messageElem = document.getElementById('message');
-                messageElem.textContent = 'שולח...';
-                messageElem.style.color = '#007bff';
-
-                try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const text = await response.text();
-                    if (text === 'Success') {
-                        messageElem.textContent = 'התשובה נשלחה בהצלחה!';
-                        messageElem.style.color = 'green';
-                    } else {
-                        messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
-                        messageElem.style.color = 'red';
-                    }
-                } catch (error) {
-                    messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
-                    messageElem.style.color = 'red';
-                    console.error('Error:', error);
-                }
-            });
+        statusSelect.addEventListener('change', () => {
+            if (statusSelect.value === 'כן' || statusSelect.value === 'אולי') {
+                countGroup.classList.remove('hidden');
+            } else {
+                countGroup.classList.add('hidden');
+                countInput.value = 1;
+            }
         });
-    </script>
+
+        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = statusSelect.value;
+            let count = countInput.value;
+            if (status === 'לא') {
+                count = 1; 
+            }
+            const phoneNumber = phoneNumberInput.value.replace('-', '');
+
+            const formData = new FormData();
+            formData.append('phoneNumber', phoneNumber);
+            formData.append('status', status);
+            formData.append('count', count);
+
+            const messageElem = document.getElementById('message');
+            messageElem.textContent = 'שולח...';
+            messageElem.style.color = '#007bff';
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const text = await response.text();
+                if (text === 'Success') {
+                    messageElem.textContent = 'התשובה נשלחה בהצלחה!';
+                    messageElem.style.color = 'green';
+                } else {
+                    messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
+                    messageElem.style.color = 'red';
+                }
+            } catch (error) {
+                messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
+                messageElem.style.color = 'red';
+                console.error('Error:', error);
+            }
+        });
+    });
+</script>
 </body>
 </html>
