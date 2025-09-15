@@ -24,6 +24,29 @@
             text-align: center;
             color: #333;
         }
+        .event-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .event-details p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        .parents-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .parents-table td {
+            width: 50%;
+            vertical-align: top;
+            padding: 5px;
+        }
+        .parents-table .groom-parents {
+            text-align: left;
+        }
+        .parents-table .bride-parents {
+            text-align: right;
+        }
         .form-group {
             margin-bottom: 15px;
         }
@@ -31,6 +54,11 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: normal;
         }
         select, input[type="number"], button {
             width: 100%;
@@ -61,23 +89,75 @@
 </head>
 <body>
     <div class="container">
+        <div class="event-details">
+            <h1>החתונה של מאיר ושובל</h1>
+            <p>האירוע יתקיים באולמי אודיסאה</p>
+            <p>הנרייטה סולד 4, באר שבע</p>
+            <p>25 | 10 | 27</p>
+            <p>יום שני</p>
+            <p>ה' בחשון</p>
+            <table class="parents-table">
+                <tr>
+                    <td class="bride-parents">
+                        <p>הורי הכלה</p>
+                        <p>יוסי ויוסה בוחבוט</p>
+                    </td>
+                    <td class="groom-parents">
+                        <p>הורי החתן</p>
+                        <p>רפי ומירב מרגי</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <h1>אישור הגעה לאירוע</h1>
         <form id="rsvpForm">
             <input type="hidden" id="phoneNumber">
             
             <div class="form-group">
-                <label for="status">מגיע/ה?</label>
-                <select id="status" required>
-                    <option value="">בחר/י</option>
-                    <option value="כן">כן</option>
-                    <option value="לא">לא</option>
-                    <option value="אולי">אולי</option>
-                </select>
+                <label>מגיע/ה?</label>
+                <div class="radio-group">
+                    <label for="statusYes">
+                        <input type="radio" id="statusYes" name="status" value="כן" required>
+                        כן
+                    </label>
+                    <label for="statusNo">
+                        <input type="radio" id="statusNo" name="status" value="לא">
+                        לא
+                    </label>
+                    <label for="statusMaybe">
+                        <input type="radio" id="statusMaybe" name="status" value="אולי">
+                        אולי
+                    </label>
+                </div>
             </div>
+
             <div id="countGroup" class="form-group hidden">
                 <label for="count">כמה אנשים מגיעים?</label>
-                <input type="number" id="count" min="1" value="1">
+                <input type="number" id="count" name="count" min="1" max="20" value="1" list="countOptions">
+                <datalist id="countOptions">
+                    <option value="1">
+                    <option value="2">
+                    <option value="3">
+                    <option value="4">
+                    <option value="5">
+                    <option value="6">
+                    <option value="7">
+                    <option value="8">
+                    <option value="9">
+                    <option value="10">
+                    <option value="11">
+                    <option value="12">
+                    <option value="13">
+                    <option value="14">
+                    <option value="15">
+                    <option value="16">
+                    <option value="17">
+                    <option value="18">
+                    <option value="19">
+                    <option value="20">
+                </datalist>
             </div>
+
             <button type="submit">שלח</button>
             <p id="message"></p>
         </form>
@@ -88,72 +168,74 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCi6cq9I95eJ4wG7kUIjFkAf5xm3HPCZZBKd6MybYB7SYius0ppgkK3rlevE6wYgE0-w/exec';
 
         document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        let rawPhoneNumber = urlParams.get('phone_number');
-        const phoneNumberInput = document.getElementById('phoneNumber');
-        
-        if (rawPhoneNumber) {
-            let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, '');
+            const urlParams = new URLSearchParams(window.location.search);
+            let rawPhoneNumber = urlParams.get('phone_number');
+            const phoneNumberInput = document.getElementById('phoneNumber');
             
-            if (cleanedNumber.startsWith('972')) {
-                cleanedNumber = '0' + cleanedNumber.substring(3);
-            }
-            
-            const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
-            phoneNumberInput.value = formattedNumber;
-        }
-
-        const statusSelect = document.getElementById('status');
-        const countGroup = document.getElementById('countGroup');
-        const countInput = document.getElementById('count');
-
-        statusSelect.addEventListener('change', () => {
-            if (statusSelect.value === 'כן' || statusSelect.value === 'אולי') {
-                countGroup.classList.remove('hidden');
-            } else {
-                countGroup.classList.add('hidden');
-                countInput.value = 1;
-            }
-        });
-
-        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const status = statusSelect.value;
-            let count = countInput.value;
-            if (status === 'לא') {
-                count = 1; 
-            }
-            const phoneNumber = phoneNumberInput.value.replace('-', '');
-
-            const formData = new FormData();
-            formData.append('phoneNumber', phoneNumber);
-            formData.append('status', status);
-            formData.append('count', count);
-
-            const messageElem = document.getElementById('message');
-            messageElem.textContent = 'שולח...';
-            messageElem.style.color = '#007bff';
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                const text = await response.text();
-                if (text === 'Success') {
-                    messageElem.textContent = 'התשובה נשלחה בהצלחה!';
-                    messageElem.style.color = 'green';
-                } else {
-                    messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
-                    messageElem.style.color = 'red';
+            if (rawPhoneNumber) {
+                let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, '');
+                
+                if (cleanedNumber.startsWith('972')) {
+                    cleanedNumber = '0' + cleanedNumber.substring(3);
                 }
-            } catch (error) {
-                messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
-                messageElem.style.color = 'red';
-                console.error('Error:', error);
+                
+                const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
+                phoneNumberInput.value = formattedNumber;
             }
+
+            const statusRadios = document.getElementsByName('status');
+            const countGroup = document.getElementById('countGroup');
+            const countInput = document.getElementById('count');
+
+            statusRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    if (radio.value === 'כן' || radio.value === 'אולי') {
+                        countGroup.classList.remove('hidden');
+                    } else {
+                        countGroup.classList.add('hidden');
+                        countInput.value = 1;
+                    }
+                });
+            });
+
+            document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const status = document.querySelector('input[name="status"]:checked').value;
+                let count = countInput.value;
+                if (status === 'לא') {
+                    count = 1;
+                }
+                const phoneNumber = phoneNumberInput.value.replace('-', '');
+
+                const formData = new FormData();
+                formData.append('phoneNumber', phoneNumber);
+                formData.append('status', status);
+                formData.append('count', count);
+
+                const messageElem = document.getElementById('message');
+                messageElem.textContent = 'שולח...';
+                messageElem.style.color = '#007bff';
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const text = await response.text();
+                    if (text === 'Success') {
+                        messageElem.textContent = 'התשובה נשלחה בהצלחה!';
+                        messageElem.style.color = 'green';
+                    } else {
+                        messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
+                        messageElem.style.color = 'red';
+                    }
+                } catch (error) {
+                    messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
+                    messageElem.style.color = 'red';
+                    console.error('Error:', error);
+                }
+            });
         });
-    });
     </script>
 </body>
 </html>
