@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישור הגעה לאירוע</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            position: relative;
+            padding: 60px 20px; /* שינוי: הגדלת הריפוד העליון והתחתון */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: #fff;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('mm.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .event-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .event-details p {
+            margin: 5px 0;
+            line-height: 1.4;
+            font-size: 1.2em;
+        }
+        .parents-table {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .parents-table td {
+            width: 50%;
+            vertical-align: top;
+            padding: 5px;
+        }
+        .parents-table .groom-parents {
+            text-align: left;
+        }
+        .parents-table .bride-parents {
+            text-align: right;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .radio-group {
+            text-align: center;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin: 0 10px;
+            font-weight: normal;
+            font-size: 1.1em;
+        }
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5em; /* הגדלת גודל הפונט של ההודעה */
+            color: green; /* צבע ברירת מחדל ירוק להודעת הצלחה */
+        }
+        .hidden {
+            display: none;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .blue-text {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="event-details">
+                <h1 class="blue-text">החתונה של מאיר ושובל</h1>
+                <p>האירוע יתקיים באולמי אודיסאה</p>
+                <p>הנרייטה סולד 4, באר שבע</p>
+                <p><span class="blue-text">25 | 10 | 27</span></p>
+                <p>יום שני</p>
+                <p>ה' בחשון</p>
+                <table class="parents-table">
+                    <tr>
+                        <td class="bride-parents">
+                            <p class="blue-text">הורי הכלה</p>
+                            <p>יוסי ויוסה  בוחבוט</p>
+                        </td>
+                        <td class="groom-parents">
+                            <p class="blue-text">הורי החתן</p>
+                            <p>רפי ומירב מרגי</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <h1>אישור הגעה לאירוע</h1>
+            <form id="rsvpForm">
+                <input type="hidden" id="phoneNumber">
+                
+                <div id="formQuestions">
+                    <div class="form-group">
+                        <label>מגיע/ה?</label>
+                        <div class="radio-group">
+                            <label for="statusYes">
+                                <input type="radio" id="statusYes" name="status" value="כן" required>
+                                כן
+                            </label>
+                            <label for="statusNo">
+                                <input type="radio" id="statusNo" name="status" value="לא">
+                                לא
+                            </label>
+                            <label for="statusMaybe">
+                                <input type="radio" id="statusMaybe" name="status" value="אולי">
+                                אולי
+                            </label>
+                        </div>
+                    </div>
+    
+                    <div id="countGroup" class="form-group hidden">
+                        <label for="count">כמה אנשים מגיעים?</label>
+                        <input type="number" id="count" name="count" min="1" max="20" value="1" list="countOptions">
+                        <datalist id="countOptions">
+                            <option value="1">
+                            <option value="2">
+                            <option value="3">
+                            <option value="4">
+                            <option value="5">
+                            <option value="6">
+                            <option value="7">
+                            <option value="8">
+                            <option value="9">
+                            <option value="10">
+                            <option value="11">
+                            <option value="12">
+                            <option value="13">
+                            <option value="14">
+                            <option value="15">
+                            <option value="16">
+                            <option value="17">
+                            <option value="18">
+                            <option value="19">
+                            <option value="20">
+                        </datalist>
+                    </div>
+                    
+                    <div id="loader" class="loader"></div>
+                    <button type="submit" id="submitBtn">שלח</button>
+                </div>
+                
+                <p id="message"></p>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCi6cq9I95eJ4wG7kUIjFkAf5xm3HPCZZBKd6MybYB7SYius0ppgkK3rlevE6wYgE0-w/exec';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let rawPhoneNumber = urlParams.get('phone_number');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            
+            if (rawPhoneNumber) {
+                let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, '');
+                
+                if (cleanedNumber.startsWith('972')) {
+                    cleanedNumber = '0' + cleanedNumber.substring(3);
+                }
+                
+                const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
+                phoneNumberInput.value = formattedNumber;
+            }
+
+            const statusRadios = document.getElementsByName('status');
+            const countGroup = document.getElementById('countGroup');
+            const countInput = document.getElementById('count');
+            const rsvpForm = document.getElementById('rsvpForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const messageElem = document.getElementById('message');
+            const formQuestions = document.getElementById('formQuestions'); // מקבלים את האלמנט החדש
+
+            statusRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    if (radio.value === 'כן' || radio.value === 'אולי') {
+                        countGroup.classList.remove('hidden');
+                    } else {
+                        countGroup.classList.add('hidden');
+                        countInput.value = 1;
+                    }
+                });
+            });
+
+            rsvpForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const status = document.querySelector('input[name="status"]:checked').value;
+                let count = countInput.value;
+                if (status === 'לא') {
+                    count = 1;
+                }
+                const phoneNumber = phoneNumberInput.value.replace('-', '');
+
+                const formData = new FormData();
+                formData.append('phoneNumber', phoneNumber);
+                formData.append('status', status);
+                formData.append('count', count);
+
+                // הצגת לודר והסתרת הכפתור
+                submitBtn.style.display = 'none';
+                loader.style.display = 'block';
+                messageElem.textContent = '';
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const text = await response.text();
+                    
+                    // הסתרת האלמנטים של הטופס
+                    formQuestions.style.display = 'none';
+
+                    if (text === 'Success') {
+                        messageElem.textContent = 'תשובתך התקבלה בהצלחה, תודה!';
+                        messageElem.style.color = 'green';
+                    } else {
+                        messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
+                        messageElem.style.color = 'red';
+                    }
+                } catch (error) {
+                    // במקרה של שגיאה, מציגים את הטופס בחזרה
+                    formQuestions.style.display = 'block';
+                    messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
+                    messageElem.style.color = 'red';
+                    console.error('Error:', error);
+                }
+                
+                // הסתרת הלודר והצגת הכפתור מחדש (במקרה של שגיאה בלבד)
+                // בגלל שרצינו שהשאלות ייעלמו, נשאיר את זה בתוך ה-try-catch
+                if (formQuestions.style.display === 'block') {
+                    loader.style.display = 'none';
+                    submitBtn.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
