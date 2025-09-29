@@ -19,14 +19,14 @@
       padding: 20px 0;
     }
 
-    /* 1. קונטיינר הטופס הלבן - מסגרת לבנה מעוגלת */
+    /* 1. קונטיינר הטופס הלבן - מסגרת לבנה מעוגלת (ברירת מחדל / דסקטופ) */
     .form-container {
       background: #ffffff;
       
-      /* הוספת קו מסגרת לבן בקודקודים מעוגלים */
+      /* מסגרת לבנה עבה ועיגול פינות */
       border: 8px solid #ffffff; 
-      border-radius: 25px; /* עיגול מעט גדול יותר של הפינות החיצוניות */
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* הגברת ההצללה להבלטה */
+      border-radius: 25px; 
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); 
       
       width: 100%;
       max-width: 550px;
@@ -37,10 +37,10 @@
       overflow: hidden;
     }
 
-    /* 2. קונטיינר התמונה - גובה מוגדל */
+    /* 2. קונטיינר התמונה - גובה מוגדל (דסקטופ) */
     .form-image-header {
       width: 100%;
-      height: 550px; /* **הגובה הוגדל שוב** */
+      height: 650px; /* **הגובה הוגדל** */
       background-image: url('mm.jpg');
       background-size: cover;
       background-position: center;
@@ -195,21 +195,25 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* ---------------------------------- */
+    /* **התאמות למובייל** */
     @media (max-width: 600px) {
       body {
-        padding: 0;
-        align-items: flex-start;
+        padding: 20px 0; /* נותן מרווח קטן מהקצוות במובייל */
+        align-items: center;
       }
       .form-container {
-        width: 100%;
+        width: 90%; /* מקטין את הרוחב כדי להשאיר שוליים בצדדים */
         max-width: none;
-        border-radius: 0;
-        box-shadow: none;
-        border: none; /* מסירים את המסגרת במובייל מלא */
+        border-radius: 15px; /* עיגול קודקודים קטן יותר במובייל */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+        border: 4px solid #ffffff; /* מסגרת לבנה דקה יותר במובייל */
       }
       .form-image-header {
-        height: 350px; /* **הגובה הוגדל במובייל** */
-        border-radius: 0;
+        height: 400px; /* **הגובה הוגדל במובייל** */
+        /* מעגל את הפינות הפנימיות העליונות בהתאם למסגרת */
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
       }
       .form-content-wrapper {
         padding: 20px;
@@ -227,6 +231,7 @@
           display: none;
       }
     }
+    /* ---------------------------------- */
   </style>
 </head>
 <body>
