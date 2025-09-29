@@ -1,254 +1,364 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>אישור הגעה לאירוע</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            text-align: right;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            background: #fff;
-            border: 10px solid white; /* מסגרת לבנה ועבה */
-        }
-        .container img {
-            width: 100%;
-            display: block;
-            border-radius: 8px 8px 0 0;
-            max-height: 450px; /* הגבלת גובה התמונה */
-            object-fit: cover; /* שמירה על פרופורציות התמונה */
-        }
-        .content {
-            padding: 20px; /* ריפוד לתוכן הטופס */
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .radio-group {
-            text-align: center;
-        }
-        .radio-group label {
-            display: inline-block;
-            margin: 0 10px;
-            font-weight: normal;
-            font-size: 1.1em;
-        }
-        select, input[type="number"], button {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #message {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.5em;
-            color: green;
-        }
-        .hidden {
-            display: none;
-        }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .blue-text {
-            color: #007bff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טופס אישור הגעה</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap');
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      text-align: center;
+      background-color: #eef2f7;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    /* 1. קונטיינר הטופס הלבן - מסגרת לבנה מעוגלת */
+    .form-container {
+      background: #ffffff;
+      
+      /* הוספת קו מסגרת לבן בקודקודים מעוגלים */
+      border: 8px solid #ffffff; 
+      border-radius: 25px; /* עיגול מעט גדול יותר של הפינות החיצוניות */
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* הגברת ההצללה להבלטה */
+      
+      width: 100%;
+      max-width: 550px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 10;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* 2. קונטיינר התמונה - גובה מוגדל */
+    .form-image-header {
+      width: 100%;
+      height: 550px; /* **הגובה הוגדל שוב** */
+      background-image: url('mm.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      /* מעגל את הפינות הפנימיות העליונות בהתאם למסגרת הלבנה */
+      border-top-left-radius: 17px; 
+      border-top-right-radius: 17px;
+    }
+
+    /* 3. קונטיינר התוכן (טופס) */
+    .form-content-wrapper {
+        padding: 40px;
+    }
+
+    /* שאר ה-CSS לטופס נשאר זהה */
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-sizing: border-box;
+      background-color: #fcfcfc;
+      text-align: center;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 20px 0;
+      padding: 10px 0;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .radio-group > label {
+        font-weight: 700;
+        color: #333;
+    }
+
+    .radio-item input[type="radio"] {
+      display: none;
+    }
+
+    .radio-item label {
+      position: relative;
+      padding-right: 30px;
+      font-size: 1rem;
+      color: #555;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+
+    .radio-item label::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      background-color: #fff;
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    .radio-item input[type="radio"]:checked+label::before {
+      border-color: #007bff;
+      background-color: #007bff;
+    }
+
+    .radio-item input[type="radio"]:checked+label::after {
+      content: '';
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      border-radius: 50%;
+    }
+
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+    }
+
+    #quantity-container {
+      display: none;
+    }
+
+    #success-message {
+      display: none;
+      color: #28a745;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.4;
+      padding: 50px 0;
+    }
+
+    #loading-spinner {
+      display: none;
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #007bff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+      margin-top: 50px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+        align-items: flex-start;
+      }
+      .form-container {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+        border: none; /* מסירים את המסגרת במובייל מלא */
+      }
+      .form-image-header {
+        height: 350px; /* **הגובה הוגדל במובייל** */
+        border-radius: 0;
+      }
+      .form-content-wrapper {
+        padding: 20px;
+      }
+
+      input[type="text"],
+      input[type="tel"],
+      input[type="number"],
+      button {
+        padding: 12px;
+        font-size: 1rem;
+      }
+      
+      .radio-group > label {
+          display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="mm.jpg" alt="Event Image">
-        <div class="content">
-            <h1>אישור הגעה לאירוע</h1>
-            <form id="rsvpForm">
-                <input type="hidden" id="phoneNumber">
-                
-                <div id="formQuestions">
-                    <div class="form-group">
-                        <label>מגיע/ה?</label>
-                        <div class="radio-group">
-                            <label for="statusYes">
-                                <input type="radio" id="statusYes" name="status" value="כן" required>
-                                כן
-                            </label>
-                            <label for="statusNo">
-                                <input type="radio" id="statusNo" name="status" value="לא">
-                                לא
-                            </label>
-                            <label for="statusMaybe">
-                                <input type="radio" id="statusMaybe" name="status" value="אולי">
-                                אולי
-                            </label>
-                        </div>
-                    </div>
-    
-                    <div id="countGroup" class="form-group hidden">
-                        <label for="count">כמה אנשים מגיעים?</label>
-                        <input type="number" id="count" name="count" min="1" max="20" value="1" list="countOptions">
-                        <datalist id="countOptions">
-                            <option value="1">
-                            <option value="2">
-                            <option value="3">
-                            <option value="4">
-                            <option value="5">
-                            <option value="6">
-                            <option value="7">
-                            <option value="8">
-                            <option value="9">
-                            <option value="10">
-                            <option value="11">
-                            <option value="12">
-                            <option value="13">
-                            <option value="14">
-                            <option value="15">
-                            <option value="16">
-                            <option value="17">
-                            <option value="18">
-                            <option value="19">
-                            <option value="20">
-                        </datalist>
-                    </div>
-                    
-                    <div id="loader" class="loader"></div>
-                    <button type="submit" id="submitBtn">שלח</button>
-                </div>
-                
-                <p id="message"></p>
-            </form>
+  
+  <div class="form-container">
+    <div class="form-image-header"></div>
+
+    <div class="form-content-wrapper">
+
+        <div id="success-message">
+          תשובתך נשמרה בהצלחה, תודה!
         </div>
+
+        <div id="loading-spinner"></div>
+
+        <form id="rsvp-form">
+          <input type="text" name="fullName" placeholder="שם מלא" autocomplete="off" required>
+          <input type="tel" name="phoneNumber" pattern="[0-9]{3}-?[0-9]{7}" placeholder="מספר טלפון (10 ספרות)" required maxlength="11" id="phoneNumberInput" autocomplete="off">
+          <input type="hidden" name="rsvpId" id="rsvpId">
+
+          <div class="radio-group">
+            <label>מגיע/ה:</label>
+            <div class="radio-item">
+              <input type="radio" id="rsvp-yes" name="rsvpStatus" value="כן" required>
+              <label for="rsvp-yes">כן</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="rsvp-no" name="rsvpStatus" value="לא" required>
+              <label for="rsvp-no">לא</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="rsvp-maybe" name="rsvpStatus" value="אולי" required>
+              <label for="rsvp-maybe">אולי</label>
+            </div>
+          </div>
+
+          <div id="quantity-container">
+            <input type="number" name="quantity" placeholder="כמה אנשים? (כולל אותך)" min="1">
+          </div>
+
+          <button type="submit">אישור הגעה</button>
+        </form>
     </div>
-    
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRu3AL4ZOdLhLHx-t1CrtFqx7krmMyRmAOpsek9sXrPinvCHMuMjs3PK1a6W4z9gDe5g/exec';
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            let rawPhoneNumber = urlParams.get('phone_number');
-            const phoneNumberInput = document.getElementById('phoneNumber');
-            
-            if (rawPhoneNumber) {
-                let cleanedNumber = rawPhoneNumber.replace(/[^0-9]/g, '');
-                
-                if (cleanedNumber.startsWith('972')) {
-                    cleanedNumber = '0' + cleanedNumber.substring(3);
-                }
-                
-                const formattedNumber = cleanedNumber.substring(0, 3) + '-' + cleanedNumber.substring(3);
-                phoneNumberInput.value = formattedNumber;
-            }
+  </div>
 
-            const statusRadios = document.getElementsByName('status');
-            const countGroup = document.getElementById('countGroup');
-            const countInput = document.getElementById('count');
-            const rsvpForm = document.getElementById('rsvpForm');
-            const submitBtn = document.getElementById('submitBtn');
-            const loader = document.getElementById('loader');
-            const messageElem = document.getElementById('message');
-            const formQuestions = document.getElementById('formQuestions');
+  <script>
+    const form = document.getElementById("rsvp-form");
+    const phoneNumberInput = document.getElementById('phoneNumberInput');
+    const quantityContainer = document.getElementById('quantity-container');
+    const quantityInput = quantityContainer.querySelector('input');
+    const rsvpRadios = document.querySelectorAll('input[name="rsvpStatus"]');
+    const successMessage = document.getElementById('success-message');
+    const loadingSpinner = document.getElementById('loading-spinner');
 
-            statusRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    if (radio.value === 'כן' || radio.value === 'אולי') {
-                        countGroup.classList.remove('hidden');
-                    } else {
-                        countGroup.classList.add('hidden');
-                        countInput.value = 1;
-                    }
-                });
-            });
+    // זיהוי מזהה מה-URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const rsvpId = urlParams.get('rsvpId');
+    if (rsvpId) {
+      document.getElementById('rsvpId').value = rsvpId;
+    }
 
-            rsvpForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const status = document.querySelector('input[name="status"]:checked').value;
-                let count = countInput.value;
-                if (status === 'לא') {
-                    count = 1;
-                }
-                const phoneNumber = phoneNumberInput.value.replace('-', '');
+    phoneNumberInput.addEventListener('input', (event) => {
+      const input = event.target;
+      let value = input.value.replace(/[^0-9]/g, '');
+      if (value.length > 3) {
+        value = value.substring(0, 3) + '-' + value.substring(3, 10);
+      }
+      input.value = value;
+    });
 
-                const formData = new FormData();
-                formData.append('phoneNumber', phoneNumber);
-                formData.append('status', status);
-                formData.append('count', count);
+    rsvpRadios.forEach(radio => {
+      radio.addEventListener('change', (event) => {
+        const selectedValue = event.target.value;
+        if (selectedValue === 'כן' || selectedValue === 'אולי') {
+          quantityContainer.style.display = 'block';
+          quantityInput.required = true;
+          // אם אין ערך, שים 1 כברירת מחדל לאישור הגעה
+          if (!quantityInput.value) {
+            quantityInput.value = '1';
+          }
+        } else if (selectedValue === 'לא') {
+          quantityContainer.style.display = 'none';
+          quantityInput.required = false;
+          quantityInput.value = '1'; // מאפס את הערך שיישמר כ-1 עבור 'לא מגיע'
+        }
+      });
+    });
 
-                submitBtn.style.display = 'none';
-                loader.style.display = 'block';
-                messageElem.textContent = '';
-                
-                try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const text = await response.text();
-                    
-                    formQuestions.style.display = 'none';
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      let missingFields = [];
 
-                    if (text === 'Success') {
-                        messageElem.textContent = 'תשובתך התקבלה בהצלחה, תודה!';
-                        messageElem.style.color = 'green';
-                    } else {
-                        messageElem.textContent = 'שגיאה: מספר הטלפון לא נמצא. אנא פנה למארגן.';
-                        messageElem.style.color = 'red';
-                    }
-                } catch (error) {
-                    formQuestions.style.display = 'block';
-                    messageElem.textContent = 'שגיאה בשליחה. נסה שוב מאוחר יותר.';
-                    messageElem.style.color = 'red';
-                    console.error('Error:', error);
-                }
-                
-                if (formQuestions.style.display === 'block') {
-                    loader.style.display = 'none';
-                    submitBtn.style.display = 'block';
-                }
-            });
-        });
-    </script>
+      if (!form.fullName.value.trim()) missingFields.push('שם מלא');
+      const cleanedPhone = form.phoneNumber.value.replace(/[^0-9]/g, '');
+      if (cleanedPhone.length !== 10) missingFields.push('מספר טלפון (10 ספרות)');
+      const rsvpSelected = form.querySelector('input[name="rsvpStatus"]:checked');
+      if (!rsvpSelected) missingFields.push('האם תגיע/י?');
+      if (rsvpSelected && (rsvpSelected.value === 'כן' || rsvpSelected.value === 'אולי')) {
+        if (!form.quantity.value || form.quantity.value < 1) {
+          missingFields.push('כמה אנשים? (לפחות 1)');
+        }
+      }
+
+      if (missingFields.length > 0) {
+        alert("יש למלא את השדות הבאים:\n" + missingFields.join('\n'));
+        return;
+      }
+
+      form.style.display = 'none';
+      loadingSpinner.style.display = 'block';
+      const data = new FormData(form);
+      const params = new URLSearchParams(data);
+
+      fetch("https://script.google.com/macros/s/AKfycbzWpgBo8WjXfAEajyjw-4RKMM5YJM6-ZKBCqYLf_7O9s9yDc_pUjerLs-OX6Iptbawg/exec", {
+        method: "POST",
+        body: params
+      })
+      .then(response => {
+        loadingSpinner.style.display = 'none';
+        if (response.ok) {
+          successMessage.style.display = 'block';
+        } else {
+          alert("אירעה שגיאה בשליחה. נסה שוב.");
+          form.style.display = 'block';
+        }
+      })
+      .catch(err => {
+        loadingSpinner.style.display = 'none';
+        alert("שגיאה: " + err.message);
+        form.style.display = 'block';
+      });
+    });
+  </script>
 </body>
 </html>
